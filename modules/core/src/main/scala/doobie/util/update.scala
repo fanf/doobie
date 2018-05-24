@@ -47,6 +47,9 @@ object update {
     protected val ai: A => I
     protected implicit val ic: Write[I]
 
+    def write: Write[A] =
+      ic.contramap(ai)
+
     // LogHandler is protected for now.
     protected val logHandler: LogHandler
 

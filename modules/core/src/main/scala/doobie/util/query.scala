@@ -47,6 +47,9 @@ object query {
     protected implicit val ic: Write[I]
     protected implicit val oc: Read[O]
 
+    def read: Read[B] =
+      oc.map(ob)
+
     // LogHandler is protected for now.
     protected val logHandler: LogHandler
 
@@ -226,6 +229,7 @@ object query {
     @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
     def toQuery0(a: A): Query0[B] =
       new Query0[B] {
+        def read = outer.read
         def sql = outer.sql
         def pos = outer.pos
         def toFragment = outer.toFragment(a)
@@ -293,6 +297,8 @@ object query {
    * stream or program in `CollectionIO`.
    */
   trait Query0[B] { outer =>
+
+    def read: Read[B]
 
     /**
      * The SQL string.
